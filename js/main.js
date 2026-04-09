@@ -50,9 +50,11 @@
 
   /* --------------------------------------------------
      3. ESTIMATE FORM — WEBHOOK SUBMISSION TO AIRTABLE
-     OWNER: Paste your webhook URL below.
+     The webhook URL is stored as a Netlify environment variable (AIRTABLE_WEBHOOK_URL).
+     Set it in: Netlify Dashboard → Site → Environment variables
+     DO NOT paste the real URL here — this file is public.
      -------------------------------------------------- */
-  var WEBHOOK_URL = 'YOUR_WEBHOOK_URL_HERE';
+  var WEBHOOK_URL = '/.netlify/functions/submit-estimate';
 
   var estimateForm = document.getElementById('estimate-form');
   var submitBtn = document.getElementById('form-submit-btn');

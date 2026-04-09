@@ -2,6 +2,12 @@
   publish = "."
   # No build command — pure static HTML/CSS/JS site
 
+[functions]
+  node_bundler = "esbuild"
+
+[context.production.environment]
+  NODE_VERSION = "18"
+
 [[headers]]
   for = "/*"
   [headers.values]
