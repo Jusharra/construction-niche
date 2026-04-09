@@ -70,6 +70,10 @@
         name:         estimateForm.name.value,
         phone:        estimateForm.phone.value,
         email:        estimateForm.email.value,
+        service_address: estimateForm.elements['service_address'].value,
+        city:         estimateForm.elements['city'].value,
+        state:        estimateForm.elements['state'].value,
+        zip_code:     estimateForm.elements['zip_code'].value,
         project_type: estimateForm.project_type.value,
         description:  estimateForm.description.value
       };
