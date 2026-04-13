@@ -955,3 +955,62 @@ p {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ── VAPI AI floating call button ───────────────────── */
+.vapi-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  background-color: var(--color-orange);
+  color: var(--color-navy-dark);
+}
+.vapi-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.34);
+}
+.vapi-btn:disabled { cursor: wait; opacity: 0.85; }
+.vapi-btn.vapi-loading {
+  background-color: var(--color-navy);
+  color: var(--color-white);
+}
+.vapi-btn.vapi-active {
+  background-color: #22c55e;
+  color: #fff;
+}
+.vapi-btn.vapi-speaking {
+  animation: vapi-pulse 1s ease-in-out infinite;
+}
+.vapi-btn.vapi-error {
+  background-color: #ef4444;
+  color: #fff;
+}
+.vapi-icon { font-size: 1rem; line-height: 1; }
+
+@keyframes vapi-pulse {
+  0%, 100% { box-shadow: 0 4px 18px rgba(34,197,94,0.4); }
+  50%       { box-shadow: 0 4px 28px rgba(34,197,94,0.75); }
+}
+
+@media (max-width: 480px) {
+  .vapi-btn {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 0.8125rem;
+  }
+}

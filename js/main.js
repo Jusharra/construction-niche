@@ -180,4 +180,116 @@
     });
   });
 
+  /* --------------------------------------------------
+     9. VAPI AI CALL BUTTON
+     Public key + assistant ID fetched from /.netlify/functions/vapi-config
+     so neither value ever lives in source code.
+     SDK loaded from CDN on first click — zero weight on initial page load.
+     Button only injected when VAPI is configured (env vars set in Netlify).
+     -------------------------------------------------- */
+  (function initVapi() {
+    var CONFIG_URL = '/.netlify/functions/vapi-config';
+    var SDK_URL    = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/vapi.sdk.umd.js';
+
+    var btn        = null;
+    var vapiInst   = null;
+    var callActive = false;
+    var cachedCfg  = null;
+
+    // Silently fetch config on load — button only appears when VAPI is configured
+    fetch(CONFIG_URL)
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (cfg) {
+        if (cfg && cfg.publicKey) {
+          cachedCfg = cfg;
+          injectButton();
+        }
+      })
+      .catch(function () { /* VAPI not configured — no button shown */ });
+
+    function injectButton() {
+      btn = document.createElement('button');
+      btn.id        = 'vapi-call-btn';
+      btn.className = 'vapi-btn vapi-idle';
+      btn.setAttribute('aria-label', 'Talk to our AI assistant');
+      btn.innerHTML =
+        '<span class="vapi-icon" aria-hidden="true">&#127897;</span>' +
+        '<span class="vapi-label">Talk to AI</span>';
+      btn.addEventListener('click', onBtnClick);
+      document.body.appendChild(btn);
+    }
+
+    function setState(state, label) {
+      if (!btn) return;
+      btn.className = 'vapi-btn vapi-' + state;
+      btn.disabled  = (state === 'loading');
+      btn.querySelector('.vapi-label').textContent = label;
+    }
+
+    function onBtnClick() {
+      if (callActive) {
+        if (vapiInst) vapiInst.stop();
+        return;
+      }
+      beginCall();
+    }
+
+    function beginCall() {
+      setState('loading', 'Connecting\u2026');
+
+      loadSdk()
+        .then(function () {
+          var VapiCtor = window.Vapi;
+          if (!VapiCtor) throw new Error('Vapi global not found after SDK load');
+
+          vapiInst = new VapiCtor(cachedCfg.publicKey);
+
+          vapiInst.on('call-start', function () {
+            callActive = true;
+            setState('active', 'Connected \u00b7 End Call');
+          });
+
+          vapiInst.on('call-end', function () {
+            callActive = false;
+            setState('idle', 'Talk to AI');
+          });
+
+          vapiInst.on('speech-start', function () {
+            if (btn) btn.classList.add('vapi-speaking');
+          });
+
+          vapiInst.on('speech-end', function () {
+            if (btn) btn.classList.remove('vapi-speaking');
+          });
+
+          vapiInst.on('error', function (err) {
+            console.error('VAPI error:', err);
+            callActive = false;
+            setState('error', 'Connection Error');
+            setTimeout(function () { setState('idle', 'Talk to AI'); }, 3000);
+          });
+
+          // Start with assistantId string or inline assistant config object
+          vapiInst.start(cachedCfg.assistantId || {});
+        })
+        .catch(function (err) {
+          console.error('VAPI init error:', err);
+          setState('error', 'Try Again');
+          setTimeout(function () { setState('idle', 'Talk to AI'); }, 3000);
+        });
+    }
+
+    function loadSdk() {
+      return new Promise(function (resolve, reject) {
+        if (window.Vapi) { resolve(); return; }
+        var s    = document.createElement('script');
+        s.src    = SDK_URL;
+        s.async  = true;
+        s.onload  = resolve;
+        s.onerror = function () { reject(new Error('VAPI SDK CDN load failed')); };
+        document.head.appendChild(s);
+      });
+    }
+  }());
+
 })();

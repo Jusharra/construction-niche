@@ -8,6 +8,45 @@
 [context.production.environment]
   NODE_VERSION = "18"
 
+# ──────────────────────────────────────────────────────────────────────────────
+# REQUIRED ENVIRONMENT VARIABLES
+# Set these in: Netlify Dashboard → Site → Environment variables
+#
+# ── SendGrid (email notifications on each form submission) ──────────────────
+#   SENDGRID_API_KEY           = SG.xxxx...          (your SendGrid API key)
+#   SENDGRID_FROM_EMAIL        = info@walldoctortx.com  (must be a Verified Sender in SendGrid)
+#   OWNER_NOTIFICATION_EMAIL   = info@walldoctortx.com  (where to receive lead emails)
+#
+# ── Twilio (SMS notification on each form submission + webhook handlers) ────
+#   TWILIO_ACCOUNT_SID         = ACxxxx...           (Twilio Account SID)
+#   TWILIO_AUTH_TOKEN          = xxxx...             (Twilio Auth Token)
+#   TWILIO_FROM_NUMBER         = +18176709771        (your Twilio number, E.164 format)
+#   OWNER_NOTIFICATION_PHONE   = +1XXXXXXXXXX        (your personal cell — receives SMS on new leads)
+#   TWILIO_FORWARD_TO          = +1XXXXXXXXXX        (optional — forward inbound calls to this number)
+#
+# ── Airtable (CRM webhook — optional if using SendGrid) ────────────────────
+#   AIRTABLE_WEBHOOK_URL       = https://hooks.airtable.com/...
+#
+# ── SMS auto-reply override (optional) ─────────────────────────────────────
+#   SMS_AUTO_REPLY             = "Custom reply text for inbound SMS"
+#
+# ── VAPI (AI voice assistant) ───────────────────────────────────────────────
+#   VAPI_PUBLIC_KEY            = your VAPI public API key  (app.vapi.ai → Account)
+#   VAPI_ASSISTANT_ID          = assistant ID              (app.vapi.ai → Assistants)
+#   VAPI_TWILIO_WEBHOOK        = (optional) VAPI-provided Twilio webhook URL
+#                                Found at: app.vapi.ai → Phone Numbers → your number
+#                                When set, inbound calls to (817) 670-9771 are routed
+#                                to VAPI AI instead of the default TwiML handler.
+#   NOTE: Once VAPI_PUBLIC_KEY + VAPI_ASSISTANT_ID are set, a floating "Talk to AI"
+#         button appears automatically on every page — no HTML changes needed.
+#
+# ── Twilio Webhook URLs to configure in Twilio Console ─────────────────────
+#   After deploying, set these in: console.twilio.com
+#   Phone Numbers → Manage → (817) 670-9771
+#   Voice webhook:    https://walldoctortx.com/.netlify/functions/twilio-voice  (POST)
+#   SMS webhook:      https://walldoctortx.com/.netlify/functions/twilio-sms    (POST)
+# ──────────────────────────────────────────────────────────────────────────────
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -19,3 +58,9 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Allow Twilio to POST to webhook functions (Twilio IPs are external)
+[[headers]]
+  for = "/.netlify/functions/twilio-*"
+  [headers.values]
+    X-Frame-Options = "DENY"
