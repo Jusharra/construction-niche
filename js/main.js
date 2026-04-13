@@ -181,114 +181,142 @@
   });
 
   /* --------------------------------------------------
-     9. VAPI AI CALL BUTTON
-     Public key + assistant ID fetched from /.netlify/functions/vapi-config
-     so neither value ever lives in source code.
-     SDK loaded from CDN on first click — zero weight on initial page load.
-     Button only injected when VAPI is configured (env vars set in Netlify).
+     9. VAPI AI CHAT WIDGET
+     Config fetched from /.netlify/functions/vapi-config — button only
+     injected when VAPI is configured (env vars set in Netlify).
+     Messages proxied through /.netlify/functions/vapi-chat so the
+     private API key is never exposed in the browser.
      -------------------------------------------------- */
-  (function initVapi() {
+  (function initChat() {
     var CONFIG_URL = '/.netlify/functions/vapi-config';
-    var SDK_URL    = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web/dist/vapi.sdk.umd.js';
+    var CHAT_URL   = '/.netlify/functions/vapi-chat';
+    var GREETING   = 'Hi! I\'m the Wall Doctor TX AI assistant. Ask me anything about our services, pricing, or to schedule a free estimate!';
 
-    var btn        = null;
-    var vapiInst   = null;
-    var callActive = false;
-    var cachedCfg  = null;
+    var panel     = null;
+    var msgList   = null;
+    var inputEl   = null;
+    var sendBtn   = null;
+    var sessionId = null;
+    var isOpen    = false;
 
-    // Silently fetch config on load — button only appears when VAPI is configured
+    // Only inject when VAPI is configured
     fetch(CONFIG_URL)
       .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (cfg) {
-        if (cfg && cfg.publicKey) {
-          cachedCfg = cfg;
-          injectButton();
-        }
+      .then(function (cfg) { if (cfg && cfg.publicKey) injectWidget(); })
+      .catch(function () { /* not configured — no widget shown */ });
+
+    function injectWidget() {
+      // Floating bubble button
+      var fab = document.createElement('button');
+      fab.id        = 'chat-fab';
+      fab.className = 'chat-fab';
+      fab.setAttribute('aria-label', 'Chat with our AI assistant');
+      fab.innerHTML =
+        '<span class="chat-fab-icon" aria-hidden="true">&#128172;</span>' +
+        '<span class="chat-fab-label">Chat with AI</span>';
+      fab.addEventListener('click', togglePanel);
+      document.body.appendChild(fab);
+
+      // Chat panel
+      panel = document.createElement('div');
+      panel.id        = 'chat-panel';
+      panel.className = 'chat-panel';
+      panel.setAttribute('role', 'dialog');
+      panel.setAttribute('aria-label', 'AI Chat');
+      panel.setAttribute('aria-hidden', 'true');
+      panel.innerHTML =
+        '<div class="chat-header">' +
+          '<div class="chat-header-info">' +
+            '<span class="chat-avatar" aria-hidden="true">&#129302;</span>' +
+            '<div><strong>Wall Doctor TX</strong><span>AI Assistant</span></div>' +
+          '</div>' +
+          '<button class="chat-close" aria-label="Close chat">&#10005;</button>' +
+        '</div>' +
+        '<div class="chat-messages" id="chat-messages"></div>' +
+        '<div class="chat-input-row">' +
+          '<input class="chat-input" type="text" placeholder="Type a message\u2026" aria-label="Chat message" maxlength="500">' +
+          '<button class="chat-send" aria-label="Send">&#10148;</button>' +
+        '</div>';
+      document.body.appendChild(panel);
+
+      msgList = panel.querySelector('#chat-messages');
+      inputEl = panel.querySelector('.chat-input');
+      sendBtn = panel.querySelector('.chat-send');
+
+      panel.querySelector('.chat-close').addEventListener('click', togglePanel);
+      sendBtn.addEventListener('click', sendMessage);
+      inputEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+
+      appendMessage('assistant', GREETING);
+    }
+
+    function togglePanel() {
+      isOpen = !isOpen;
+      panel.classList.toggle('chat-panel-open', isOpen);
+      panel.setAttribute('aria-hidden', String(!isOpen));
+      if (isOpen) { inputEl.focus(); scrollBottom(); }
+    }
+
+    function sendMessage() {
+      var text = inputEl.value.trim();
+      if (!text) return;
+      inputEl.value    = '';
+      sendBtn.disabled = true;
+      inputEl.disabled = true;
+
+      appendMessage('user', text);
+      var typingId = appendTyping();
+
+      fetch(CHAT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, sessionId: sessionId })
       })
-      .catch(function () { /* VAPI not configured — no button shown */ });
-
-    function injectButton() {
-      btn = document.createElement('button');
-      btn.id        = 'vapi-call-btn';
-      btn.className = 'vapi-btn vapi-idle';
-      btn.setAttribute('aria-label', 'Talk to our AI assistant');
-      btn.innerHTML =
-        '<span class="vapi-icon" aria-hidden="true">&#127897;</span>' +
-        '<span class="vapi-label">Talk to AI</span>';
-      btn.addEventListener('click', onBtnClick);
-      document.body.appendChild(btn);
-    }
-
-    function setState(state, label) {
-      if (!btn) return;
-      btn.className = 'vapi-btn vapi-' + state;
-      btn.disabled  = (state === 'loading');
-      btn.querySelector('.vapi-label').textContent = label;
-    }
-
-    function onBtnClick() {
-      if (callActive) {
-        if (vapiInst) vapiInst.stop();
-        return;
-      }
-      beginCall();
-    }
-
-    function beginCall() {
-      setState('loading', 'Connecting\u2026');
-
-      loadSdk()
-        .then(function () {
-          var VapiCtor = window.Vapi;
-          if (!VapiCtor) throw new Error('Vapi global not found after SDK load');
-
-          vapiInst = new VapiCtor(cachedCfg.publicKey);
-
-          vapiInst.on('call-start', function () {
-            callActive = true;
-            setState('active', 'Connected \u00b7 End Call');
-          });
-
-          vapiInst.on('call-end', function () {
-            callActive = false;
-            setState('idle', 'Talk to AI');
-          });
-
-          vapiInst.on('speech-start', function () {
-            if (btn) btn.classList.add('vapi-speaking');
-          });
-
-          vapiInst.on('speech-end', function () {
-            if (btn) btn.classList.remove('vapi-speaking');
-          });
-
-          vapiInst.on('error', function (err) {
-            console.error('VAPI error:', err);
-            callActive = false;
-            setState('error', 'Connection Error');
-            setTimeout(function () { setState('idle', 'Talk to AI'); }, 3000);
-          });
-
-          // Start with assistantId string or inline assistant config object
-          vapiInst.start(cachedCfg.assistantId || {});
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          removeTyping(typingId);
+          if (data.sessionId) sessionId = data.sessionId;
+          appendMessage('assistant', data.reply || 'Sorry, I couldn\'t get a response. Call us at (817) 670-9771.');
         })
-        .catch(function (err) {
-          console.error('VAPI init error:', err);
-          setState('error', 'Try Again');
-          setTimeout(function () { setState('idle', 'Talk to AI'); }, 3000);
+        .catch(function () {
+          removeTyping(typingId);
+          appendMessage('assistant', 'Something went wrong. Please call us at (817) 670-9771.');
+        })
+        .finally(function () {
+          sendBtn.disabled = false;
+          inputEl.disabled = false;
+          inputEl.focus();
         });
     }
 
-    function loadSdk() {
-      return new Promise(function (resolve, reject) {
-        if (window.Vapi) { resolve(); return; }
-        var s    = document.createElement('script');
-        s.src    = SDK_URL;
-        s.async  = true;
-        s.onload  = resolve;
-        s.onerror = function () { reject(new Error('VAPI SDK CDN load failed')); };
-        document.head.appendChild(s);
-      });
+    function appendMessage(role, text) {
+      var div = document.createElement('div');
+      div.className   = 'chat-msg chat-msg-' + role;
+      div.textContent = text;
+      msgList.appendChild(div);
+      scrollBottom();
+    }
+
+    function appendTyping() {
+      var id  = 'typing-' + Date.now();
+      var div = document.createElement('div');
+      div.id        = id;
+      div.className = 'chat-msg chat-msg-assistant chat-typing';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      msgList.appendChild(div);
+      scrollBottom();
+      return id;
+    }
+
+    function removeTyping(id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function scrollBottom() {
+      if (msgList) msgList.scrollTop = msgList.scrollHeight;
     }
   }());
 

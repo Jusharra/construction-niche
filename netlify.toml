@@ -30,14 +30,18 @@
 # ── SMS auto-reply override (optional) ─────────────────────────────────────
 #   SMS_AUTO_REPLY             = "Custom reply text for inbound SMS"
 #
-# ── VAPI (AI voice assistant) ───────────────────────────────────────────────
+# ── VAPI (AI chat widget) ────────────────────────────────────────────────────
 #   VAPI_PUBLIC_KEY            = your VAPI public API key  (app.vapi.ai → Account)
 #   VAPI_ASSISTANT_ID          = assistant ID              (app.vapi.ai → Assistants)
+#   VAPI_PRIVATE_KEY           = your VAPI private/server API key
+#                                Found at: app.vapi.ai → Account → API Keys → Private key
+#                                Used by /.netlify/functions/vapi-chat to proxy text messages
+#                                securely — never exposed to the browser.
 #   VAPI_TWILIO_WEBHOOK        = (optional) VAPI-provided Twilio webhook URL
 #                                Found at: app.vapi.ai → Phone Numbers → your number
 #                                When set, inbound calls to (817) 670-9771 are routed
 #                                to VAPI AI instead of the default TwiML handler.
-#   NOTE: Once VAPI_PUBLIC_KEY + VAPI_ASSISTANT_ID are set, a floating "Talk to AI"
+#   NOTE: Once VAPI_PUBLIC_KEY + VAPI_ASSISTANT_ID are set, a floating "Chat with AI"
 #         button appears automatically on every page — no HTML changes needed.
 #
 # ── Twilio Webhook URLs to configure in Twilio Console ─────────────────────
