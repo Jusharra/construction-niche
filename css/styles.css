@@ -965,31 +965,28 @@ p {
   gap: 6px;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--color-navy-dark);
+  color: var(--color-white);
   text-decoration: none;
   white-space: nowrap;
   padding: 6px 14px;
-  border: 2px solid var(--color-orange);
+  border: 2px solid var(--color-white);
   border-radius: var(--radius-md);
-  transition: background-color 0.18s, color 0.18s;
-}
-.nav-phone:hover {
-  background-color: var(--color-orange);
-  color: #fff;
 }
 
-/* ── Hero phone line ─────────────────────────────────── */
-.hero-phone {
-  margin: 0 0 1.25rem;
-  font-size: 1rem;
-  color: rgba(255,255,255,0.85);
-}
-.hero-phone a {
-  color: var(--color-yellow);
+/* ── Hero phone button ───────────────────────────────── */
+.btn-phone-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 700;
+  color: var(--color-white);
   text-decoration: none;
+  border: 2px solid var(--color-white);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-family: var(--font-primary);
 }
-.hero-phone a:hover { text-decoration: underline; }
 
 /* ── AI Chat floating widget ─────────────────────────── */
 
