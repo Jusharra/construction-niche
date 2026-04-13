@@ -3,7 +3,7 @@
    OWNER: Change values here to rebrand the entire site
    ===================================================== */
 :root {
-  /* Brand colors matched to The Wall Doctor logo */
+  /* Brand colors matched to Wall Doctor TX logo */
   --color-navy:       #1c1c1c;   /* near-black from logo background */
   --color-navy-dark:  #111111;
   --color-navy-light: #2a2a2a;
@@ -455,7 +455,7 @@ p {
    ===================================================== */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
 }
@@ -826,6 +826,7 @@ p {
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
 
   .footer-grid {
     grid-template-columns: 1fr 1fr;

@@ -1,5 +1,5 @@
 /* =====================================================
-   The Valley Wall Doctor — main.js
+   Wall Doctor TX — main.js
    Vanilla JS, zero dependencies
    ===================================================== */
 

@@ -14,8 +14,8 @@
 #
 # ── SendGrid (email notifications on each form submission) ──────────────────
 #   SENDGRID_API_KEY           = SG.xxxx...          (your SendGrid API key)
-#   SENDGRID_FROM_EMAIL        = info@walldoctortx.com  (must be a Verified Sender in SendGrid)
-#   OWNER_NOTIFICATION_EMAIL   = info@walldoctortx.com  (where to receive lead emails)
+#   SENDGRID_FROM_EMAIL        = noreply@walldoctortx.com  (must be a Verified Sender in SendGrid; used for both admin + customer emails)
+#   OWNER_NOTIFICATION_EMAIL   = valleywalldoctor@yahoo.com  (admin receives new lead notification)
 #
 # ── Twilio (SMS notification on each form submission + webhook handlers) ────
 #   TWILIO_ACCOUNT_SID         = ACxxxx...           (Twilio Account SID)
