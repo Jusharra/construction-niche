@@ -1,0 +1,335 @@
+/* =====================================================
+   SERVICE PAGE STYLES
+   Used on all /services/*.html pages
+   ===================================================== */
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+.breadcrumb a {
+  color: rgba(255,255,255,0.75);
+  transition: color var(--transition);
+}
+.breadcrumb a:hover { color: var(--color-orange); }
+.breadcrumb span { color: rgba(255,255,255,0.45); }
+
+/* ── Service Hero (compact) ──────────────────── */
+.service-hero {
+  background-color: var(--color-navy-dark);
+  background-image: url('../images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: var(--spacing-lg) 0;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+}
+.service-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(28,28,28,0.75) 100%);
+}
+.service-hero .container { position: relative; z-index: 1; }
+.service-hero h1 {
+  color: var(--color-white);
+  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+  margin-bottom: var(--spacing-xs);
+}
+.service-hero-sub {
+  color: rgba(255,255,255,0.82);
+  font-size: 1.05rem;
+  max-width: 580px;
+  margin-bottom: var(--spacing-md);
+}
+
+/* ── Content + Sidebar Layout ────────────────── */
+.service-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+.service-main h2 {
+  color: var(--color-navy);
+  margin: var(--spacing-md) 0 var(--spacing-xs);
+  font-size: 1.4rem;
+}
+.service-main h2:first-child { margin-top: 0; }
+.service-main p { margin-bottom: var(--spacing-sm); }
+
+/* Features list */
+.service-features {
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--spacing-sm);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.service-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  padding: 0.4rem 0;
+}
+.service-features li::before {
+  content: '✓';
+  color: var(--color-orange);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Why choose grid */
+.why-choose-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+.why-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: var(--spacing-sm);
+  background: var(--color-gray-light);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-orange);
+}
+.why-icon {
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-orange);
+  color: var(--color-navy-dark);
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+}
+.why-item strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-navy);
+  margin-bottom: 0.2rem;
+}
+.why-item p {
+  font-size: 0.8125rem;
+  margin: 0;
+  color: var(--color-text-light);
+  line-height: 1.5;
+}
+
+/* ── Sidebar ─────────────────────────────────── */
+.service-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+.sidebar-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-mid);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-card);
+}
+.sidebar-card h3 {
+  color: var(--color-navy);
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+.sidebar-card h4 {
+  color: var(--color-navy);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--spacing-xs);
+}
+.sidebar-card p {
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-sm);
+}
+.sidebar-phone {
+  display: block;
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  transition: color var(--transition);
+}
+.sidebar-phone:hover { color: var(--color-orange); }
+
+/* Related services list */
+.related-services {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.related-services li a {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color var(--transition);
+}
+.related-services li a::before {
+  content: '→';
+  color: var(--color-orange);
+  font-size: 0.75rem;
+}
+.related-services li a:hover { color: var(--color-navy); }
+
+/* ── Service Areas Grid ──────────────────────── */
+.areas-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+.area-group h3 {
+  color: var(--color-navy);
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-orange);
+  display: inline-block;
+}
+.city-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+.city-list li {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.city-list li::before {
+  content: '📍';
+  font-size: 0.75rem;
+}
+
+/* ── FAQ ─────────────────────────────────────── */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.faq-item {
+  border: 1px solid var(--color-gray-mid);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  background: var(--color-white);
+  border: none;
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-navy);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: background-color var(--transition);
+}
+.faq-question:hover { background-color: var(--color-gray-light); }
+.faq-question::after {
+  content: '+';
+  font-size: 1.25rem;
+  color: var(--color-orange);
+  flex-shrink: 0;
+  font-weight: 700;
+  transition: transform var(--transition);
+}
+.faq-item.open .faq-question::after { transform: rotate(45deg); }
+.faq-answer {
+  display: none;
+  padding: 0 1.25rem 1rem;
+  background: var(--color-white);
+}
+.faq-item.open .faq-answer { display: block; }
+.faq-answer p {
+  font-size: 0.9375rem;
+  margin: 0;
+  color: var(--color-text-light);
+  line-height: 1.7;
+}
+
+/* ── CTA Banner ──────────────────────────────── */
+.cta-banner {
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+}
+.cta-banner h2 {
+  color: var(--color-white);
+  margin-bottom: var(--spacing-xs);
+}
+.cta-banner p {
+  color: rgba(255,255,255,0.75);
+  margin-bottom: var(--spacing-md);
+  font-size: 1.05rem;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 1024px) {
+  .service-content-grid {
+    grid-template-columns: 1fr 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-content-grid {
+    grid-template-columns: 1fr;
+  }
+  .service-sidebar {
+    order: -1; /* sidebar above content on mobile */
+  }
+  .service-features {
+    grid-template-columns: 1fr;
+  }
+  .why-choose-grid {
+    grid-template-columns: 1fr;
+  }
+  .areas-columns {
+    grid-template-columns: 1fr;
+  }
+  .city-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .city-list {
+    grid-template-columns: 1fr;
+  }
+}

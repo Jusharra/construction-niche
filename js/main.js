@@ -151,4 +151,33 @@
     });
   }
 
+  /* --------------------------------------------------
+     7. FAQ ACCORDION
+     -------------------------------------------------- */
+  document.querySelectorAll('.faq-question').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var item = btn.closest('.faq-item');
+      var isOpen = item.classList.contains('open');
+      // Close all others
+      document.querySelectorAll('.faq-item.open').forEach(function (el) {
+        el.classList.remove('open');
+      });
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  /* --------------------------------------------------
+     8. NAV DROPDOWN — touch / keyboard support
+     -------------------------------------------------- */
+  document.querySelectorAll('.nav-dropdown > a').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      // On touch devices prevent nav follow and toggle dropdown
+      if (window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+        var parent = link.closest('.nav-dropdown');
+        parent.classList.toggle('open');
+      }
+    });
+  });
+
 })();
