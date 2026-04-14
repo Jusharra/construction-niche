@@ -3,6 +3,7 @@
   # No build command — pure static HTML/CSS/JS site
 
 [functions]
+  directory = "netlify/functions"
   node_bundler = "esbuild"
 
 [context.production.environment]
