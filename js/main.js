@@ -202,7 +202,7 @@
     // Only inject when VAPI is configured
     fetch(CONFIG_URL)
       .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (cfg) { if (cfg && cfg.publicKey) injectWidget(); })
+      .then(function (cfg) { if (cfg && cfg.configured) injectWidget(); })
       .catch(function () { /* not configured — no widget shown */ });
 
     function injectWidget() {
