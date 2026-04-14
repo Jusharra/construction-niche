@@ -587,6 +587,11 @@ p {
   transform: scale(1.05);
 }
 
+/* Auto-hide placeholder once an <img> is uncommented in the same slot */
+.portfolio-item:has(img) .portfolio-placeholder {
+  display: none;
+}
+
 /* Placeholder shown until owner adds real photos */
 .portfolio-placeholder {
   width: 100%;

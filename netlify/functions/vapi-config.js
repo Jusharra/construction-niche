@@ -32,7 +32,7 @@ exports.handler = async function (event) {
     headers: {
       'Content-Type': 'application/json',
       // Short cache — allows instant re-config without a redeploy
-      'Cache-Control': 'public, max-age=300'
+      'Cache-Control': 'no-store'
     },
     body: JSON.stringify({ publicKey, assistantId })
   };
